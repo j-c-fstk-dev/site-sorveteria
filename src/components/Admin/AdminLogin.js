@@ -13,7 +13,10 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      await login(email, password);
+      const success = await login(email, password);
+      if (!success) {
+        setError('Email ou senha incorretos');
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -35,7 +38,7 @@ const AdminLogin = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@aloha.com"
+              placeholder="admin@aloha.com.br"
               required
             />
           </div>
