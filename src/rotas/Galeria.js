@@ -1,109 +1,58 @@
-import React, { useEffect, useState } from "react";
-import LayoutRotas from "../components/Utility/LayoutRotas";
-import Modal from "../components/Utility/Modal";
-import classes from "./Galeria.module.css";
-import Head from "../components/Utility/Head";
-
-const galeria = [
-  {
-    img: "gal1.webp",
-    descricao: "Donec ac malesuada tortor. Suspendisse justo enim.",
-    id: "gal1",
-  },
-  {
-    img: "gal2.webp",
-    descricao: "Nunc a dapibus leo.",
-    id: "gal2",
-  },
-  {
-    img: "gal3.webp",
-    descricao: "Vestibulum tristique malesuada erat ut ultricies.",
-    id: "gal3",
-  },
-  {
-    img: "gal4.webp",
-    descricao: "In eu lacus lacinia nibh gravida commodo",
-    id: "gal4",
-  },
-  {
-    img: "gal5.webp",
-    descricao: "Proin ac sodales leo",
-    id: "gal5",
-  },
-  {
-    img: "gal6.webp",
-    descricao: "Quisque et fermentum turpis.",
-    id: "gal6",
-  },
-  {
-    img: "gal7.webp",
-    descricao: "Maecenas a lobortis urna.",
-    id: "gal7",
-  },
-  {
-    img: "gal8.webp",
-    descricao: "Aenean consequat elit ut magna fermentum posuere.",
-    id: "gal8",
-  },
-  {
-    img: "gal9.webp",
-    descricao: "Praesent efficitur sit amet felis eget vehicula.",
-    id: "gal9",
-  },
-];
+import React, { useEffect } from 'react';
+import Head from '../components/Utility/Head';
+import LayoutRotas from '../components/Utility/LayoutRotas';
+import { useApi } from '../hooks/useApi';
+import classes from './Galeria.module.css';
 
 const Galeria = () => {
-  const [modalShown, setModalShown] = useState(false);
-  const [currentImageShown, setCurrentImageShown] = useState();
+  const { data: galeria, loading, error } = useApi('galeria', { ativa: 1 });
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
 
-  const closeModal = () => {
-    setModalShown(false);
-  };
+  if (loading) {
+    return (
+      <LayoutRotas titulo='Carregando...' descricao=''>
+        <Head title='Galeria' description='Carregando galeria...' />
+        <div className={classes.loading}>Carregando galeria...</div>
+      </LayoutRotas>
+    );
+  }
 
-  const openModal = (imagem) => {
-    setModalShown(true);
-    setCurrentImageShown(imagem);
-  };
+  if (error) {
+    return (
+      <LayoutRotas titulo='Erro' descricao='Não foi possível carregar a galeria'>
+        <Head title='Erro - Galeria' description='Erro ao carregar galeria' />
+        <div className={classes.error}>Ocorreu um erro ao carregar a galeria.</div>
+      </LayoutRotas>
+    );
+  }
 
   return (
-    <>
-      <Head title="Galeria" description="Conheça o nosso ambiente" />
-      {modalShown && (
-        <Modal onClose={closeModal}>
-          <div className={classes.modal}>
-            <div className={classes.img}>
-              <img
-                src={require(`../assets/${currentImageShown.img}`)}
-                alt={currentImageShown.descricao}
-              />
-            </div>
-            <p>{currentImageShown.descricao}</p>
+    <LayoutRotas titulo='Nossa Galeria!' descricao='Conheça o ambiente tropical e familiar da Aloha Sorveteria'>
+      <Head title='Galeria - Aloha Sorveteria' description='Veja fotos da Aloha Sorveteria em Pindamonhangaba' />
+      <div className={classes.galeria}>
+        {galeria?.map((item, index) => (
+          <div key={item.id} className={classes.item}>
+            <img 
+              src={item.imagem_url} 
+              alt={item.titulo || `Foto ${index + 1} da galeria`}
+              onError={(e) => {
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53Lm9yZy8yMDAwL3N2ZyI+DQo8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiPjwvc3ZnPg==';
+              }}
+            />
+            {item.titulo && (
+              <div className={classes.overlay}>
+                <h3>{item.titulo}</h3>
+                {item.descricao && <p>{item.descricao}</p>}
+              </div>
+            )}
           </div>
-        </Modal>
-      )}
-      <LayoutRotas
-        titulo="Conheça nosso ambiente!"
-        descricao="Curabitur rutrum elit vel felis volutpat interdum"
-      >
-        <ul className={classes.galeria}>
-          {galeria.map((imagem) => (
-            <li key={imagem.id}>
-              <button onClick={() => openModal(imagem)}>
-                <img
-                  src={require(`../assets/${imagem.img}`)}
-                  alt={imagem.descricao}
-                />
-              </button>
-            </li>
-          ))}
-        </ul>
-      </LayoutRotas>
-    </>
-  );
-};
+        ))}
+      </div>
+    </LayoutRotas>
+  )
+}
 
 export default Galeria;

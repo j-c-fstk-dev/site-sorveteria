@@ -3,10 +3,26 @@
   justify-content: space-between;
 }
 
+.listaLojas li {
+  flex: 1;
+  margin: 0 1rem;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.listaLojas li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
 .listaLojas li h2 {
   margin-bottom: 1rem;
-  font-weight: 400;
-  font-size: 1.2rem;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #2c3e50;
 }
 
 .listaLojas li h2::before {
@@ -28,16 +44,44 @@
   background: var(--cor-5);
 }
 
-.listaLojas li:nth-of-type(3) h2::before {
-  background: var(--cor-6);
-}
-
 .listaLojas li span {
   display: block;
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+  font-size: 0.95rem;
 }
 
-.listaLojas li span+span {
-  margin-top: .5rem;
+.listaLojas li span strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.listaLojas li .horario {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.listaLojas li .descricao {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.listaLojas li .descricao span {
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.error {
+  color: #dc3545;
 }
 
 @media (max-width: 850px) {
@@ -45,6 +89,12 @@
     flex-direction: column;
     text-align: center;
     align-items: center;
+  }
+  
+  .listaLojas li {
+    margin: 0 0 2rem 0;
+    width: 100%;
+    max-width: 400px;
   }
   
   .listaLojas li + li {
