@@ -1,0 +1,223 @@
+.unidadeList {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.addButton {
+  background: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.addButton:hover {
+  background: #218838;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.cardHeader {
+  padding: 20px;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.cardHeader h3 {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.typeBadge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.typeBadge.matriz {
+  background: #3498db;
+  color: white;
+}
+
+.typeBadge.express {
+  background: #f39c12;
+  color: white;
+}
+
+.cardContent {
+  padding: 20px;
+}
+
+.infoRow {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+
+.label {
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 80px;
+  margin-right: 12px;
+  font-size: 0.9rem;
+}
+
+.value {
+  color: #6c757d;
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.description {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f3f4;
+}
+
+.description .label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.description p {
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cardActions {
+  padding: 0 20px 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.editButton {
+  flex: 1;
+  background: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.editButton:hover {
+  background: #2980b9;
+}
+
+.deleteButton {
+  flex: 1;
+  background: #dc3545;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.empty p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+  }
+  
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .label {
+    min-width: auto;
+    margin-right: 0;
+    margin-bottom: 4px;
+  }
+}

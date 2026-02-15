@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Poppins:wght@300&display=swap");
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --cor-1: #511f92;
+  --cor-2: #451280;
+  --cor-3: #ba9eff;
+  --cor-4: #f5f5f5;
+  --cor-5: #f3e882;
+  --cor-6: #53d6ce;
+  --cor-7: #4e4919;
+  --cor-8: #15423f;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--cor-1);
+  color: var(--cor-4);
+  font-size: 15px;
+  font-weight: 300;
+  background-image: url("./assets/pattern.svg"), url("./assets/enf.svg");
+  background-position: top right;
+  background-repeat: repeat, no-repeat;
+  background-size: 10rem, 20rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Fredoka";
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+a,
+button,
+input,
+textarea {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+input,
+button,
+textarea {
+  border: none;
+  outline: 0;
+  resize: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1050px;
+  width: 100%;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+.btn-amarelo {
+  background: var(--cor-5);
+  color: var(--cor-7);
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.2rem;
+  transition: 0.2s;
+  box-shadow: 2px 2px 2px 0 #411177;
+}
+
+.btn-amarelo:hover {
+  transform: scale(1.1);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cor-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cor-3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cor-4);
+}
+
+@media (max-width: 550px) {
+  body {
+    text-align: center;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 450px) {
+  body {
+    background-image: url("./assets/pattern.svg");
+    background-size: 8rem;
+  }
+}

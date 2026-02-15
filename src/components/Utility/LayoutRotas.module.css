@@ -1,0 +1,50 @@
+.tituloRotas {
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.main {
+  padding: 4rem 0 6rem 0;
+  min-height: calc(100vh - 4rem);
+  background-image: url('../../assets/enf2.svg');
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  background-size: 20rem;
+}
+
+.main::before {
+  content: '';
+  display: block;
+  position: absolute;
+  background: var(--cor-3);
+  width: 300px;
+  height: 300px;
+  top: -200px;
+  z-index: -1;
+  right: calc(50% - 150px);
+  filter: blur(200px)
+}
+
+
+@media (max-width: 500px) {
+  
+.main::before {
+  width: 200px;
+  height: 200px;
+  top: -100px;
+  right: calc(50% - 100px);
+}
+.main {
+  padding: 2rem 0 6rem 0;
+}
+.tituloRotas {
+  margin-bottom: 4rem;
+}
+}
+
+
+@media (max-width: 450px) {
+  .main {
+    background-size: 7rem;
+  }
+}

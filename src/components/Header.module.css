@@ -1,0 +1,93 @@
+.header {
+  position: relative;
+  width: 100%;
+  height: 6rem;
+}
+
+.header nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-width: 1150px;
+}
+
+.itensMenu {
+  display: flex;
+}
+
+.itensMenu a {
+  margin: 0 1rem;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s;
+}
+
+.itensMenu a:hover {
+  color: var(--cor-3);
+}
+
+.itensMenu a.active {
+  border-bottom: 1px solid currentColor;
+}
+
+.logo {
+  padding-right: 1rem;
+  font-family: "Fredoka";
+  font-weight: 400;
+  line-height: auto;
+  font-size: 1.3rem;
+  margin-top: -4px;
+}
+
+.menuBtn {
+  display: none;
+}
+
+@media (max-width: 550px) {
+  .menuBtn {
+    background: transparent;
+    border: 2px solid transparent;
+    padding: 0.2rem;
+    border-radius: 0.2rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .menuBtn svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .menuBtn.shown {
+    border: 2px solid var(--cor-3);
+    color: var(--cor-3);
+  }
+  .header nav {
+    justify-content: space-between;
+  }
+
+  .itensMenu {
+    position: absolute;
+    top: 4.5rem;
+    background: var(--cor-2);
+    flex-direction: column;
+    padding: 1rem;
+    right: 1rem;
+    border-radius: 0.2rem;
+    z-index: 99;
+    width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    transition: 0.2s;
+  }
+
+  .itensMenu.shown {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .itensMenu a {
+    margin: 0.5rem;
+  }
+}

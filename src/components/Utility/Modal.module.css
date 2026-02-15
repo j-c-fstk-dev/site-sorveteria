@@ -1,0 +1,55 @@
+.backdrop {
+    z-index: 3;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0, .5);
+}
+
+.modalContainer {
+    position: fixed;
+    max-width: 750px;
+    width: 100%;
+    padding: 0 1rem;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    z-index: 3;
+}
+
+.modalContent {
+    background: var(--cor-1);
+    border-radius: .2rem;
+    box-shadow: 0 0 30px 0 rgba(0,0,0, .1 );
+    padding: 1rem;
+    transform: translateY(-1rem);
+    animation: modal .2s ease forwards;
+    max-height: 70vh;
+    height: 100%;
+    overflow: auto;
+}
+
+.btnClose {
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--cor-5);
+    color: var(--cor-7);
+    display: grid;
+    place-items: center;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 4;
+}
+
+.btnClose svg {
+    width: 22px;
+    height: 22px;
+}
+
+@keyframes modal {
+    to {
+        transform: translateY(0);
+    }
+}
