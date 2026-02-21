@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import classes from "./Entrada.module.css";
 import ImgEntrada from "../../assets/sorvete-entrada.webp";
+import LogoAloha from "../../assets/logo.jpg";
 import { ReactComponent as ArrowSvg } from "../../assets/arrow-right.svg";
 import "aos/dist/aos.css";
 import AOS from "aos";
@@ -18,19 +19,16 @@ const Entrada = () => {
     <section className={classes.entrada}>
       <div className={classes.container}>
         <div className={classes.principal} data-aos="fade-down">
-          <p className={classes.funcionamento}>
-            Segunda a sexta - 15h as 21h / Sábado e domingo - 15h as 23h{" "}
-          </p>
+          <div className={classes.logoContainer}>
+            <img src={LogoAloha} alt="Aloha Sorveteria" className={classes.logo} />
+          </div>
           <h1>
-            Lorem <span>i</span>
-            <span>p</span>
-            <span>s</span>
-            <span>u</span>
-            <span>m</span> <br /> dolor sit amet
+            Aloha <span>Sorveteria</span>
           </h1>
           <p className={classes.descricao}>
-            Nulla ultricies placerat posuere. Fusce sagittis ligula eu <br />{" "}
-            porttitor. Donec ultricies et felis at euismod.
+            Sorvetes artesanais feitos com leite fresco da fazenda, <br />{" "}
+            sem gordura vegetal e sem conservantes. Ambiente tropical <br />{" "}
+            e familiar com área kids para toda família!
           </p>
           <Link to="/lojas">
             Encontre a loja mais perto de você <ArrowSvg />
@@ -38,12 +36,12 @@ const Entrada = () => {
         </div>
       </div>
       <div className={classes.img} data-aos="fade-up">
-        <img src={ImgEntrada} alt="Casquinha de sorvete" />
+        <img src={ImgEntrada} alt="Sorvete artesanal Aloha" />
       </div>
       <ul className={classes.caracts} data-aos="fade-down">
-        <li>Sed augue erat, congue et</li>
-        <li>Aliquam elementum arcu ut</li>
-        <li>Duis pharetra maximus lorem</li>
+        <li>Mais de 30 sabores artesanais</li>
+        <li>Leite fresco direto da fazenda</li>
+        <li>Ambiente familiar com área kids</li>
       </ul>
     </section>
   );
