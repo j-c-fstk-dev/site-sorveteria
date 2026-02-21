@@ -14,12 +14,11 @@ const Entrada = () => {
             <img src={LogoAloha} alt="Aloha Sorveteria" className={classes.logo} />
           </div>
           <h1>
-            Aloha <span>Sorveteria</span>
+            Sorvetes Artesanais
           </h1>
           <p className={classes.descricao}>
-            Sorvetes artesanais feitos com leite fresco da fazenda, <br />{" "}
-            sem gordura vegetal e sem conservantes. Ambiente tropical <br />{" "}
-            e familiar com área kids para toda família!
+            Feitos com leite fresco da fazenda, <br />
+            sem gordura vegetal e sem conservantes.
           </p>
           <Link to="/lojas">
             Encontre a loja mais perto de você <ArrowSvg />
