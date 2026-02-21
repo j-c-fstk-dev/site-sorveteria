@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 class SupabaseService {
@@ -9,32 +10,67 @@ class SupabaseService {
 
   init() {
     if (!this.supabaseUrl || !this.supabaseKey) {
-      console.warn('Supabase credentials not found in environment variables');
+      console.error('Supabase credentials not found. Check your environment variables.');
       return false;
     }
-
+    if (this.client) {
+      return true;
+    }
     this.client = createClient(this.supabaseUrl, this.supabaseKey);
     return true;
   }
 
-  async get(table, filters = {}) {
+  async get(table, params = {}) {
     if (!this.client && !this.init()) {
-      throw new Error('Supabase client not initialized');
+      console.error("Supabase client not initialized.");
+      throw new Error("Supabase client not initialized");
     }
-    
+
     let query = this.client.from(table).select('*');
-    
-    Object.entries(filters).forEach(([key, value]) => {
-      if (key.includes('__')) {
-        const [field, operator] = key.split('__');
-        query = query.filter(field, operator, value);
+    const controlParams = ['_sort', '_limit'];
+
+    // Handle filters
+    for (const key in params) {
+      if (controlParams.includes(key)) continue;
+
+      const value = params[key];
+
+      if (typeof value === 'string' && value.includes('.')) {
+        let [operator, ...rest] = value.split('.');
+        let filterValue = rest.join('.');
+
+        // Convert common string literals to their actual types
+        if (filterValue === 'true') filterValue = true;
+        else if (filterValue === 'false') filterValue = false;
+        else if (filterValue === 'null') filterValue = null;
+
+        // Apply Supabase filter, e.g., .filter('id', 'eq', 1)
+        query = query.filter(key, operator, filterValue);
       } else {
+        // Handle simple equality for cases like { id: 5 }
         query = query.eq(key, value);
       }
-    });
-    
+    }
+
+    // Handle sorting, e.g., _sort=ordem.desc
+    if (params._sort) {
+        const [field, direction] = params._sort.split('.');
+        const ascending = direction !== 'desc';
+        query = query.order(field, { ascending });
+    }
+
+    // Handle limit
+    if (params._limit) {
+        query = query.limit(Number(params._limit));
+    }
+
     const { data, error } = await query;
-    if (error) throw error;
+
+    if (error) {
+      console.error(`Supabase 'get' error on table '${table}':`, error);
+      throw error;
+    }
+
     return data;
   }
 

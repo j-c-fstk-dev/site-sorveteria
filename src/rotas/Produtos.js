@@ -1,15 +1,15 @@
 
 import React, { useEffect, useMemo } from 'react';
-import LayoutRotas from '../components/Utility/LayoutRotas'; // Caminho corrigido
-import Slider from '../components/Utility/Slider'; // Caminho corrigido
+import LayoutRotas from '../components/Utility/LayoutRotas';
+import Slider from '../components/Utility/Slider';
 import classes from './Produtos.module.css';
-import { useApi } from '../hooks/useApi'; // Caminho corrigido
-import Head from '../components/Utility/Head'; // Caminho corrigido
+import { useApi } from '../hooks/useApi';
+import Head from '../components/Utility/Head';
 
 const Produtos = () => {
-  // Busca todos os produtos ativos e todas as categorias ativas, ordenados
-  const { data: produtos, loading: loadingProdutos, error: errorProdutos } = useApi('produtos', { ativo: 1, _sort: 'ordem' });
-  const { data: categorias, loading: loadingCategorias, error: errorCategorias } = useApi('categorias', { ativa: 1, _sort: 'ordem' });
+  // Correção: Usa a sintaxe 'eq.true' para filtros booleanos no Supabase
+  const { data: produtos, loading: loadingProdutos, error: errorProdutos } = useApi('produtos', { ativo: 'eq.true', _sort: 'ordem' });
+  const { data: categorias, loading: loadingCategorias, error: errorCategorias } = useApi('categorias', { ativa: 'eq.true', _sort: 'ordem' });
 
   useEffect(() => {
     window.scrollTo(0, 0);
