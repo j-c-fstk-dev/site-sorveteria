@@ -1,3 +1,4 @@
+
 .wrapSlider {
   position: relative;
 }
@@ -19,6 +20,11 @@
   place-items: center;
   z-index: 2;
   border: 2px solid currentColor;
+}
+
+.wrapSlider > button:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
 }
 
 .wrapSlider > button svg {
@@ -61,6 +67,7 @@
   border-radius: 0.2rem;
   overflow: hidden;
   margin: 0;
+  position: relative; /* Adicionado para posicionar os selos */
 }
 
 .btnSlideImg img:hover {
@@ -85,6 +92,38 @@
   background: rgb(65, 30, 112, 0.8);
   transition: 0.3s;
 }
+
+/* --- Estilos dos Selos --- */
+.sealContainer {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seal {
+  background-color: #fff;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.lactose {
+  background-color: #dcfce7; /* Verde claro */
+  color: #166534;
+}
+
+.diet {
+  background-color: #dbeafe; /* Azul claro */
+  color: #1e40af;
+}
+/* --- Fim dos Estilos dos Selos --- */
 
 @media (max-width: 1100px) {
   .wrapSlider > button {

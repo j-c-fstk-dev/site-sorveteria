@@ -1,3 +1,4 @@
+
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import classes from "./Slider.module.css";
 import { ReactComponent as IconArrowRight } from "../../assets/arrow-right-short.svg";
@@ -8,6 +9,8 @@ import AOS from "aos";
 import SliderModal from "./SliderModal";
 
 const ItemsSlider = memo(({ itemWidth, item, openModal }) => {
+  const defaultImage = 'https://via.placeholder.com/300x300.png?text=Sem+Imagem';
+
   return (
     <li style={{ minWidth: `${itemWidth}px` }}>
       <button
@@ -15,10 +18,17 @@ const ItemsSlider = memo(({ itemWidth, item, openModal }) => {
         onClick={() => openModal(item)}
         draggable="false"
       >
+        {/* Container para os selos */}
+        <div className={classes.sealContainer}>
+          {item.is_zero_lactose && <span className={`${classes.seal} ${classes.lactose}`}>0% Lactose</span>}
+          {item.is_diet && <span className={`${classes.seal} ${classes.diet}`}>Diet</span>}
+        </div>
+
         <img
-          src={require(`../../assets/img-produtos/${item.img}.webp`)}
+          src={item.imagem_url || defaultImage} // Usa a URL do DB ou uma imagem padrão
           alt={item.nome}
           draggable="false"
+          onError={(e) => { e.target.onerror = null; e.target.src=defaultImage; }} // Fallback se a imagem falhar
         />
         <p className={classes.nomeItem}>{item.nome}</p>
       </button>
@@ -43,26 +53,20 @@ const Slider = ({ items, colorsBtn }) => {
   }, []);
 
   useEffect(() => {
-    setItemWidth(slideRef.current.offsetWidth / itensShown);
-
-    slideRef.current.style.transform = `translateX(${-(
-      currentIndex * itemWidth
-    )}px)`;
+    if (slideRef.current) {
+        setItemWidth(slideRef.current.offsetWidth / itensShown);
+        slideRef.current.style.transform = `translateX(${-(
+          currentIndex * itemWidth
+        )}px)`;
+    }
   }, [currentIndex, itemWidth, itensShown]);
 
-  const debounce = useCallback((func, wait, immediate) => {
+  const debounce = useCallback((func, wait) => {
     let timeout;
-    return function () {
-      const context = this,
-        args = arguments;
-      const later = function () {
-        timeout = null;
-        if (!immediate) func.apply(context, args);
-      };
-      const callNow = immediate && !timeout;
+    return function(...args) {
+      const context = this;
       clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
+      timeout = setTimeout(() => func.apply(context, args), wait);
     };
   }, []);
 
@@ -75,21 +79,17 @@ const Slider = ({ items, colorsBtn }) => {
     ];
 
     const changeSlideItemsToShown = debounce(() => {
-      const reverseOrderMediaQueries = [...mediaQuerySizes].reverse();
+        if (!slideRef.current) return;
+        const reverseOrderMediaQueries = [...mediaQuerySizes].reverse();
+        const windowMatch = reverseOrderMediaQueries.find(
+            (mediaQuery) => mediaQuery.windowSize >= window.innerWidth
+        );
 
-      const windowMatch = reverseOrderMediaQueries.find(
-        (mediaQuery) => mediaQuery.windowSize >= window.innerWidth
-      );
-
-      if (windowMatch) {
-        setItensShown(windowMatch.itensToShow);
-      } else {
-        setItensShown(5);
-      }
-
-      setItemWidth(slideRef.current.offsetWidth / itensShown);
-      setCurrentIndex(0);
-    }, 300);
+        const newItensShown = windowMatch ? windowMatch.itensToShow : 5;
+        setItensShown(newItensShown);
+        setItemWidth(slideRef.current.offsetWidth / newItensShown);
+        setCurrentIndex(0);
+    }, 250);
 
     changeSlideItemsToShown();
 
@@ -100,13 +100,15 @@ const Slider = ({ items, colorsBtn }) => {
   }, [debounce, itensShown]);
 
   const nextSlideHandler = () => {
-    if (currentIndex > totalItens - itensShown - 1) return;
-    setCurrentIndex((state) => state + 1);
+    if (currentIndex < totalItens - itensShown) {
+      setCurrentIndex((state) => state + 1);
+    }
   };
 
   const previousSlideHandler = () => {
-    if (currentIndex === 0) return;
-    setCurrentIndex((state) => state - 1);
+    if (currentIndex > 0) {
+      setCurrentIndex((state) => state - 1);
+    }
   };
 
   const handleOpenModal = useCallback((item) => {
@@ -118,7 +120,11 @@ const Slider = ({ items, colorsBtn }) => {
     setModalIsShown(false);
   };
 
-  const canSlide = totalItens <= itensShown;
+  if (!items || items.length === 0) {
+    return <p>Nenhum produto para exibir nesta categoria.</p>;
+  }
+
+  const canSlide = totalItens > itensShown;
 
   return (
     <>
@@ -129,13 +135,14 @@ const Slider = ({ items, colorsBtn }) => {
         />
       )}
       <div className={classes.wrapSlider} data-aos="fade-up">
-        {!canSlide && (
+        {canSlide && (
           <>
             <button
               className={classes.btnAnt}
               onClick={previousSlideHandler}
               style={colorsBtn}
               aria-label="item anterior"
+              disabled={currentIndex === 0}
             >
               <IconArrowLeft />
             </button>
@@ -144,6 +151,7 @@ const Slider = ({ items, colorsBtn }) => {
               onClick={nextSlideHandler}
               style={colorsBtn}
               aria-label="item posterior"
+              disabled={currentIndex >= totalItens - itensShown}
             >
               <IconArrowRight />
             </button>
@@ -168,10 +176,7 @@ const Slider = ({ items, colorsBtn }) => {
 
 Slider.propTypes = {
   items: PropTypes.array.isRequired,
-  colorsBtn: PropTypes.exact({
-    backgroundColor: PropTypes.string,
-    color: PropTypes.string,
-  }),
+  colorsBtn: PropTypes.object,
 };
 
 Slider.defaultProps = {
@@ -180,4 +185,5 @@ Slider.defaultProps = {
     color: "#4b1688",
   },
 };
+
 export default Slider;
