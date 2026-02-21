@@ -1,3 +1,4 @@
+
 .entrada {
   min-height: calc(100vh - 6rem);
   display: flex;
@@ -41,7 +42,6 @@
   top: 5rem;
   right: 20%;
   z-index: -1;
-  filter: blur(200px);
 }
 
 .caracts {
@@ -259,7 +259,6 @@
   .img::before {
     width: 150px;
     height: 150px;
-    filter: blur(100px);
   }
   .caracts {
     margin: 2rem auto 0 auto;
@@ -280,7 +279,6 @@
     top: -100px;
     z-index: -1;
     right: calc(50% - 100px);
-    filter: blur(150px);
   }
 }
 
