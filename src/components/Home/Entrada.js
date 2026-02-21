@@ -1,24 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import classes from "./Entrada.module.css";
 import ImgEntrada from "../../assets/sorvete-entrada.webp";
 import LogoAloha from "../../assets/logo.jpg";
 import { ReactComponent as ArrowSvg } from "../../assets/arrow-right.svg";
-import "aos/dist/aos.css";
-import AOS from "aos";
 
 const Entrada = () => {
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      offset: 0,
-    });
-  }, []);
-
   return (
     <section className={classes.entrada}>
       <div className={classes.container}>
-        <div className={classes.principal} data-aos="fade-down">
+        <div className={classes.principal}>
           <div className={classes.logoContainer}>
             <img src={LogoAloha} alt="Aloha Sorveteria" className={classes.logo} />
           </div>
@@ -35,10 +26,10 @@ const Entrada = () => {
           </Link>
         </div>
       </div>
-      <div className={classes.img} data-aos="fade-up">
+      <div className={classes.img}>
         <img src={ImgEntrada} alt="Sorvete artesanal Aloha" />
       </div>
-      <ul className={classes.caracts} data-aos="fade-down">
+      <ul className={classes.caracts}>
         <li>Mais de 30 sabores artesanais</li>
         <li>Leite fresco direto da fazenda</li>
         <li>Ambiente familiar com área kids</li>
