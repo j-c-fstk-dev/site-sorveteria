@@ -6,9 +6,11 @@ const SliderModal = ({onClose, currentItemModal}) => {
   return (
     <Modal onClose={onClose}>
     <div className={classes.modal}>
-      <div className={classes.imgModal}>
-        <img src={require(`../../assets/img-produtos/${currentItemModal.img}.webp`)} alt={currentItemModal.nome}/>
-      </div>
+      {currentItemModal.img && // Conditional rendering for the image
+        <div className={classes.imgModal}>
+          <img src={require(`../../assets/img-produtos/${currentItemModal.img}.webp`)} alt={currentItemModal.nome}/>
+        </div>
+      }
       <div className={classes.infosModal}>
         <h3>{currentItemModal.nome}</h3>
         <p>{currentItemModal.descricao}</p>

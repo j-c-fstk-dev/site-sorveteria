@@ -1,84 +1,76 @@
+
+import supabaseService from './supabase'; // Importa diretamente o serviço supabase
+
+// Classe que delega todas as chamadas para o supabaseService
 class ApiService {
-  constructor() {
-    this.client = null;
-    this.clientType = 'sqlite';
+  constructor(client) {
+    this.client = client;
   }
 
-  // Configuração dinâmica do cliente
-  configureClient(type = 'sqlite') {
-    this.clientType = type;
-    if (type === 'supabase') {
-      this.client = require('./supabase').default;
-    } else {
-      this.client = require('./database').default;
+  // Garante que o cliente esteja inicializado antes de qualquer chamada
+  async _ensureClient() {
+    if (typeof this.client.init === 'function' && !this.client.client) {
+        await this.client.init();
     }
   }
 
-  // Inicializar o serviço
-  async init() {
-    if (!this.client) {
-      this.configureClient(this.clientType);
-    }
-    if (typeof this.client.init === 'function') {
-      await this.client.init();
-    }
-  }
-
-  // Métodos genéricos
+  // Métodos genéricos delegados
   async get(table, filters = {}) {
-    await this.init();
+    await this._ensureClient();
     return this.client.get(table, filters);
   }
 
   async create(table, data) {
-    await this.init();
+    await this._ensureClient();
     return this.client.create(table, data);
   }
 
   async update(table, id, data) {
-    await this.init();
+    await this._ensureClient();
     return this.client.update(table, id, data);
   }
 
   async delete(table, id) {
-    await this.init();
+    await this._ensureClient();
     return this.client.delete(table, id);
   }
 
-  // Métodos específicos do negócio
+  // Métodos específicos do negócio que agora usam a sintaxe correta do Supabase
   async getProdutosDestaque() {
-    return this.get('produtos', { destaque: 1, ativo: 1 });
+    return this.get('produtos', { destaque: 'eq.true', ativo: 'eq.true' });
   }
 
   async getUnidadesAtivas() {
+    // Supondo que unidades não tenham um campo 'ativo', mas se tiver, adicione o filtro
     return this.get('unidades');
   }
 
   async getPromocoesAtivas() {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toISOString();
     return this.get('promocoes', {
-      ativa: 1,
-      data_inicio__lte: hoje,
-      data_fim__gte: hoje
+      ativa: 'eq.true',
+      data_inicio: `lte.${hoje}`,
+      data_fim: `gte.${hoje}`
     });
   }
 
   async getEmpresaInfo() {
-    const empresas = await this.get('empresas');
+    const empresas = await this.get('empresa', { '_limit': 1 });
     return empresas[0] || null;
   }
 
   async getCategoriasAtivas() {
-    return this.get('categorias', { ativa: 1 });
+    return this.get('categorias', { ativa: 'eq.true' });
   }
 
   async getProdutosPorCategoria(categoriaId) {
-    return this.get('produtos', { categoria_id: categoriaId, ativo: 1 });
+    return this.get('produtos', { categoria_id: `eq.${categoriaId}`, ativo: 'eq.true' });
   }
 
   async getGaleriaAtiva() {
-    return this.get('galeria', { ativa: 1 });
+    return this.get('galeria', { ativa: 'eq.true' });
   }
 }
 
-export default new ApiService();
+// Exporta uma instância única do ApiService, já configurada com o supabaseService
+export default new ApiService(supabaseService);
