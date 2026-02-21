@@ -2,7 +2,6 @@
   min-height: calc(100vh - 6rem);
   display: flex;
   align-items: center;
-  background-image: url("../../assets/enf2.svg");
   background-position: bottom left;
   background-repeat: no-repeat;
   background-size: 20rem;
