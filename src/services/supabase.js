@@ -26,39 +26,41 @@ class SupabaseService {
       throw new Error("Supabase client not initialized");
     }
 
-    let query = this.client.from(table).select();
+    let query;
 
-    // Separa os parâmetros de controle (_sort, _limit) dos filtros
-    const { _sort, _limit, ...filters } = params;
-
-    // Aplica os filtros (eq, lte, gte, etc.)
-    for (const key in filters) {
-      const value = filters[key];
-
-      if (typeof value === 'string' && value.includes('.')) {
-        let [operator, ...rest] = value.split('.');
-        let filterValue = rest.join('.');
-
-        if (filterValue === 'true') filterValue = true;
-        else if (filterValue === 'false') filterValue = false;
-        else if (filterValue === 'null') filterValue = null;
-
-        query = query.filter(key, operator, filterValue);
-      } else {
-        query = query.eq(key, value);
+    // --- INÍCIO DO TESTE DE DEPURACÃO ---
+    // Ignora os parâmetros recebidos e força uma consulta que sabemos ser válida.
+    if (table === 'empresas') {
+      console.log('[DEBUG] Executando consulta hardcoded para a tabela: empresas');
+      query = this.client.from('empresas').select('*').limit(1);
+    } else if (table === 'categorias') {
+      console.log('[DEBUG] Executando consulta hardcoded para a tabela: categorias');
+      query = this.client.from('categorias').select('*').eq('ativo', true).order('ordem', { ascending: true });
+    } else {
+      // Mantém a lógica original para qualquer outra tabela
+      query = this.client.from(table).select();
+      const { _sort, _limit, ...filters } = params;
+      for (const key in filters) {
+        const value = filters[key];
+        if (typeof value === 'string' && value.includes('.')) {
+          const [operator, ...rest] = value.split('.');
+          let filterValue = rest.join('.');
+          if (filterValue === 'true') filterValue = true;
+          else if (filterValue === 'false') filterValue = false;
+          query = query.filter(key, operator, filterValue);
+        } else {
+          query = query.eq(key, value);
+        }
+      }
+      if (_sort) {
+        const [field, direction] = _sort.split('.');
+        query = query.order(field, { ascending: direction !== 'desc' });
+      }
+      if (_limit) {
+        query = query.limit(Number(_limit));
       }
     }
-
-    // Aplica a ordenação
-    if (_sort) {
-      const [field, direction] = _sort.split('.');
-      query = query.order(field, { ascending: direction !== 'desc' });
-    }
-
-    // Aplica o limite
-    if (_limit) {
-      query = query.limit(Number(_limit));
-    }
+    // --- FIM DO TESTE DE DEPURACÃO ---
 
     const { data, error } = await query;
 
