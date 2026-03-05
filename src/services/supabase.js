@@ -1,77 +1,73 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Esta é uma solução alternativa radical. Vamos usar o fetch diretamente
+// para contornar um problema desconhecido que está corrompendo a URL final.
+const manualFetch = async (url, supabaseKey) => {
+  const response = await fetch(url, {
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
 class SupabaseService {
   constructor() {
-    this.client = null;
+    this.client = null; // O cliente ainda será usado para métodos que não são o GET
     this.supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
     this.supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
   }
 
   init() {
     if (!this.supabaseUrl || !this.supabaseKey) {
-      console.error('Supabase credentials not found. Check your environment variables.');
+      console.error('Supabase credentials not found.');
       return false;
     }
     if (this.client) {
       return true;
     }
+    // A inicialização do cliente continua sendo útil para outros métodos
     this.client = createClient(this.supabaseUrl, this.supabaseKey);
     return true;
   }
 
   async get(table, params = {}) {
-    if (!this.client && !this.init()) {
-      console.error("Supabase client not initialized.");
+    if (!this.init()) {
       throw new Error("Supabase client not initialized");
     }
 
-    let query;
+    // Transforma os parâmetros em uma query string manualmente
+    const queryParams = new URLSearchParams();
+    queryParams.append('select', '*'); // Seleciona todas as colunas
 
-    // --- INÍCIO DO TESTE DE DEPURACÃO ---
-    // Ignora os parâmetros recebidos e força uma consulta que sabemos ser válida.
-    if (table === 'empresas') {
-      console.log('[DEBUG] Executando consulta hardcoded para a tabela: empresas');
-      query = this.client.from('empresas').select('*').limit(1);
-    } else if (table === 'categorias') {
-      console.log('[DEBUG] Executando consulta hardcoded para a tabela: categorias');
-      query = this.client.from('categorias').select('*').eq('ativo', true).order('ordem', { ascending: true });
-    } else {
-      // Mantém a lógica original para qualquer outra tabela
-      query = this.client.from(table).select();
-      const { _sort, _limit, ...filters } = params;
-      for (const key in filters) {
-        const value = filters[key];
-        if (typeof value === 'string' && value.includes('.')) {
-          const [operator, ...rest] = value.split('.');
-          let filterValue = rest.join('.');
-          if (filterValue === 'true') filterValue = true;
-          else if (filterValue === 'false') filterValue = false;
-          query = query.filter(key, operator, filterValue);
-        } else {
-          query = query.eq(key, value);
-        }
-      }
-      if (_sort) {
-        const [field, direction] = _sort.split('.');
-        query = query.order(field, { ascending: direction !== 'desc' });
-      }
-      if (_limit) {
-        query = query.limit(Number(_limit));
-      }
+    for (const key in params) {
+      queryParams.append(key, params[key]);
     }
-    // --- FIM DO TESTE DE DEPURACÃO ---
 
-    const { data, error } = await query;
+    const queryString = queryParams.toString()
+      .replace(/_limit=/g, 'limit=') // Corrige o nome do parâmetro de limite
+      .replace(/_sort=/g, 'order='); // Corrige o nome do parâmetro de ordenação
 
-    if (error) {
-      console.error(`Supabase 'get' error on table '${table}':`, error);
+    const url = `${this.supabaseUrl}/rest/v1/${table}?${queryString}`;
+
+    console.log(`[DEBUG] Executando GET com fetch manual: ${url}`);
+
+    try {
+      const data = await manualFetch(url, this.supabaseKey);
+      return data;
+    } catch (error) {
+      console.error(`Fetch manual para a tabela '${table}' falhou:`, error);
       throw error;
     }
-
-    return data;
   }
 
+  // Os outros métodos (create, update, delete) permanecem inalterados, 
+  // pois não parecem estar afetados pelo problema.
   async create(table, data) {
     if (!this.client && !this.init()) {
       throw new Error('Supabase client not initialized');
