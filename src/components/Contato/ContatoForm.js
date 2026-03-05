@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import useInput from '../../../hooks/useInput';
-import { useApiMethod } from '../../../hooks/useApi';
+import React from 'react';
+import useInput from '../../hooks/useInput';
+import { useApiMethod } from '../../hooks/useApi';
 import classes from './ContatoForm.module.css';
 
 const ContatoForm = () => {
