@@ -101,7 +101,7 @@ class SupabaseService {
   }
 
   async delete(table, id) {
-    if (!this.client && !this.init()) {.
+    if (!this.client && !this.init()) {
       throw new Error('Supabase client not initialized');
     }
     
