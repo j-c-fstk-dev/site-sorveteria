@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+
 import { Link } from 'react-router-dom';
-import { useApi } from '../../../hooks/useApi';
-import { useCrud } from '../../../hooks/useApi';
+import { useApi, useCrud } from '../../../hooks/useApi';
 import classes from './ProdutoList.module.css';
 
 const ProdutoList = () => {
   const { data: produtos, loading, error, refetch } = useApi('produtos');
-  const { delete: deleteProduto, loading: deleting } = useCrud('produtos');
+  const { data: categorias } = useApi('categorias'); 
+  const { delete: deleteProduto } = useCrud('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoria, setSelectedCategoria] = useState('');
 
-  const filteredProdutos = produtos?.filter(produto => {
-    const matchesSearch = produto.nome.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategoria = !selectedCategoria || produto.categoria_id == selectedCategoria;
-    return matchesSearch && matchesCategoria;
-  }) || [];
+  const filteredProdutos = useMemo(() => {
+    return produtos?.filter(produto => {
+      const matchesSearch = produto.nome.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategoria = !selectedCategoria || produto.categoria_id === selectedCategoria;
+      return matchesSearch && matchesCategoria;
+    }) || [];
+  }, [produtos, searchTerm, selectedCategoria]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este produto?')) {
@@ -43,85 +46,55 @@ const ProdutoList = () => {
           + Novo Produto
         </Link>
       </div>
-
+      
       <div className={classes.filters}>
-        <input
+        <input 
           type="text"
-          placeholder="Buscar produtos..."
+          placeholder="Buscar por nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={classes.searchInput}
         />
-        
-        <select
+        <select 
           value={selectedCategoria}
           onChange={(e) => setSelectedCategoria(e.target.value)}
-          className={classes.categoryFilter}
+          className={classes.categorySelect}
         >
-          <option value="">Todas as categorias</option>
-          <option value="1">Sorvetes de Massa</option>
-          <option value="2">Picolés</option>
-          <option value="3">Especiais</option>
-          <option value="4">Açaí</option>
+          <option value="">Todas as Categorias</option>
+          {categorias?.map(cat => (
+            <option key={cat.id} value={cat.id}>{cat.nome}</option>
+          ))}
         </select>
       </div>
 
-      <div className={classes.grid}>
-        {filteredProdutos.map((produto) => (
-          <div key={produto.id} className={classes.card}>
-            <div className={classes.cardImage}>
-              {produto.imagem_url ? (
-                <img src={produto.imagem_url} alt={produto.nome} />
-              ) : (
-                <div className={classes.noImage}>🍦</div>
-              )}
-            </div>
-            
-            <div className={classes.cardContent}>
-              <h3>{produto.nome}</h3>
-              <p className={classes.description}>{produto.descricao}</p>
-              
-              {produto.preco && (
-                <p className={classes.price}>R$ {produto.preco.toFixed(2)}</p>
-              )}
-              
-              <div className={classes.badges}>
-                {produto.destaque && (
-                  <span className={classes.badge}>Destaque</span>
-                )}
-                {produto.ativo || (
-                  <span className={`${classes.badge} ${classes.inactive}`}>Inativo</span>
-                )}
-              </div>
-            </div>
-            
-            <div className={classes.cardActions}>
-              <Link 
-                to={`/admin/produtos/editar/${produto.id}`}
-                className={classes.editButton}
-              >
-                Editar
-              </Link>
-              <button
-                onClick={() => handleDelete(produto.id)}
-                disabled={deleting}
-                className={classes.deleteButton}
-              >
-                Excluir
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredProdutos.length === 0 && (
-        <div className={classes.empty}>
-          <p>Nenhum produto encontrado.</p>
-          <Link to="/admin/produtos/novo" className={classes.addButton}>
-            Criar primeiro produto
-          </Link>
-        </div>
-      )}
+      <table className={classes.table}>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredProdutos.map(produto => {
+            const categoriaNome = categorias?.find(c => c.id === produto.categoria_id)?.nome || 'N/A';
+            return (
+              <tr key={produto.id}>
+                <td>{produto.nome}</td>
+                <td>{categoriaNome}</td>
+                <td>R$ {parseFloat(produto.preco).toFixed(2)}</td>
+                <td>{produto.ativo ? 'Ativo' : 'Inativo'}</td>
+                <td className={classes.actions}>
+                  <Link to={`/admin/produtos/editar/${produto.id}`} className={classes.editLink}>Editar</Link>
+                  <button onClick={() => handleDelete(produto.id)} className={classes.deleteButton}>Excluir</button>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
