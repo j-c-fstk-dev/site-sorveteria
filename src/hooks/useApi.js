@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 
 export function useApi(table, filters = {}) {
@@ -6,7 +6,7 @@ export function useApi(table, filters = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -18,11 +18,12 @@ export function useApi(table, filters = {}) {
     } finally {
       setLoading(false);
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [table, JSON.stringify(filters)]);
 
   useEffect(() => {
     fetchData();
-  }, [table, JSON.stringify(filters)]);
+  }, [fetchData]);
 
   const refetch = () => fetchData();
 
@@ -86,7 +87,7 @@ export function useApiMethod(method, ...args) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const execute = async (...executeArgs) => {
+  const execute = useCallback(async (...executeArgs) => {
     try {
       setLoading(true);
       setError(null);
@@ -100,13 +101,14 @@ export function useApiMethod(method, ...args) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [method]);
 
   useEffect(() => {
     if (args.length > 0) {
       execute(...args);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [execute, JSON.stringify(args)]);
 
   return { data, loading, error, execute };
 }
