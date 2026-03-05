@@ -27,15 +27,24 @@ class SupabaseService {
     }
 
     let query = this.client.from(table).select('*');
-    
-    // Extract control parameters and remove them from the main params object
-    const sortParam = params._sort;
-    const limitParam = params._limit;
-    delete params._sort;
-    delete params._limit;
 
-    // Handle filters with the remaining parameters
+    // Handle control parameters first
+    if (params._sort) {
+      const [field, direction] = params._sort.split('.');
+      const ascending = direction !== 'desc';
+      query = query.order(field, { ascending });
+    }
+    if (params._limit) {
+      query = query.limit(Number(params._limit));
+    }
+
+    // Handle filters, explicitly skipping control parameters
+    const controlParams = ['_sort', '_limit'];
     for (const key in params) {
+      if (controlParams.includes(key)) {
+        continue; // Skip control parameters in this loop
+      }
+
       const value = params[key];
 
       if (typeof value === 'string' && value.includes('.')) {
@@ -50,18 +59,6 @@ class SupabaseService {
       } else {
         query = query.eq(key, value);
       }
-    }
-
-    // Handle sorting
-    if (sortParam) {
-        const [field, direction] = sortParam.split('.');
-        const ascending = direction !== 'desc';
-        query = query.order(field, { ascending });
-    }
-
-    // Handle limit
-    if (limitParam) {
-        query = query.limit(Number(limitParam));
     }
 
     const { data, error } = await query;
