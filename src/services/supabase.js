@@ -46,12 +46,15 @@ class SupabaseService {
     queryParams.append('select', '*'); // Seleciona todas as colunas
 
     for (const key in params) {
-      queryParams.append(key, params[key]);
+      if (key === '_sort') {
+        queryParams.append('order', `${params[key]}.asc`);
+      } else {
+        queryParams.append(key, params[key]);
+      }
     }
 
     const queryString = queryParams.toString()
-      .replace(/_limit=/g, 'limit=') // Corrige o nome do parâmetro de limite
-      .replace(/_sort=/g, 'order='); // Corrige o nome do parâmetro de ordenação
+      .replace(/_limit=/g, 'limit='); // Corrige o nome do parâmetro de limite
 
     const url = `${this.supabaseUrl}/rest/v1/${table}?${queryString}`;
 
@@ -98,7 +101,7 @@ class SupabaseService {
   }
 
   async delete(table, id) {
-    if (!this.client && !this.init()) {
+    if (!this.client && !this.init()) {.
       throw new Error('Supabase client not initialized');
     }
     

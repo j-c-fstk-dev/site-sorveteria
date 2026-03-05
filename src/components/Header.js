@@ -8,13 +8,13 @@ const Header = () => {
   const [menuIsVisible, setMenuIsVisible] = useState(false);
   const [empresaInfo, setEmpresaInfo] = useState(null);
   const menuRef = useRef();
-  const { data: empresas } = useApi('empresas');
+  const { data: empresa } = useApi('empresa', { _limit: 1 });
 
   useEffect(() => {
-    if (empresas && empresas.length > 0) {
-      setEmpresaInfo(empresas[0]);
+    if (empresa && empresa.length > 0) {
+      setEmpresaInfo(empresa[0]);
     }
-  }, [empresas]);
+  }, [empresa]);
 
   useEffect(() => {
     const checkVisibility = ({target}) => {
