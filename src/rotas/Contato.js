@@ -1,19 +1,18 @@
-import React, { useEffect } from 'react'
-import classes from './Contato.module.css'
-import { ReactComponent as InstagramIcon } from '../assets/instagram.svg'
-import { ReactComponent as WhatsappIcon } from '../assets/whatsapp.svg'
-import LayoutRotas from '../components/Utility/LayoutRotas'
-import useInput from '../hooks/useInput'
-import { useApi, useApiMethod } from '../hooks/useApi'
-import ContatoForm from '../components/Contato/ContatoForm'
+import React, { useEffect } from 'react';
+import classes from './Contato.module.css';
+import { ReactComponent as InstagramIcon } from '../assets/instagram.svg';
+import { ReactComponent as WhatsappIcon } from '../assets/whatsapp.svg';
+import LayoutRotas from '../components/Utility/LayoutRotas';
+import { useApi } from '../hooks/useApi';
+import ContatoForm from '../components/Contato/ContatoForm';
 
 const Contato = () => {
-  const { data: empresa, loading, error } = useApi('empresa', { '_limit': 1 });
-  const { nome, email, telefone, instagram, whatsapp, facebook } = empresa || {};
+  const { data: empresa } = useApi('empresa', { '_limit': 1 });
+  const { email, telefone, instagram, whatsapp } = empresa || {};
 
   useEffect(() => {
-    document.title = 'Contato - Gelato & Grano'
-  }, [])
+    document.title = 'Contato - Gelato & Grano';
+  }, []);
 
   return (
     <LayoutRotas>
@@ -29,10 +28,6 @@ const Contato = () => {
             <a href={instagram} target="_blank" rel="noreferrer">
               <InstagramIcon />
             </a>
-            {/* Ícone do Facebook removido temporariamente se não houver link */}
-            {/* <a href={facebook} target="_blank" rel="noreferrer">
-              <FacebookIcon />
-            </a> */}
             <a href={`https://wa.me/${whatsapp?.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer">
               <WhatsappIcon />
             </a>
@@ -46,7 +41,7 @@ const Contato = () => {
 
       </div>
     </LayoutRotas>
-  )
-}
+  );
+};
 
-export default Contato
+export default Contato;
