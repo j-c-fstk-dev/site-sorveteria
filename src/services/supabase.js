@@ -27,41 +27,41 @@ class SupabaseService {
     }
 
     let query = this.client.from(table).select('*');
-    const controlParams = ['_sort', '_limit'];
+    
+    // Extract control parameters and remove them from the main params object
+    const sortParam = params._sort;
+    const limitParam = params._limit;
+    delete params._sort;
+    delete params._limit;
 
-    // Handle filters
+    // Handle filters with the remaining parameters
     for (const key in params) {
-      if (controlParams.includes(key)) continue;
-
       const value = params[key];
 
       if (typeof value === 'string' && value.includes('.')) {
         let [operator, ...rest] = value.split('.');
         let filterValue = rest.join('.');
 
-        // Convert common string literals to their actual types
         if (filterValue === 'true') filterValue = true;
         else if (filterValue === 'false') filterValue = false;
         else if (filterValue === 'null') filterValue = null;
 
-        // Apply Supabase filter, e.g., .filter('id', 'eq', 1)
         query = query.filter(key, operator, filterValue);
       } else {
-        // Handle simple equality for cases like { id: 5 }
         query = query.eq(key, value);
       }
     }
 
-    // Handle sorting, e.g., _sort=ordem.desc
-    if (params._sort) {
-        const [field, direction] = params._sort.split('.');
+    // Handle sorting
+    if (sortParam) {
+        const [field, direction] = sortParam.split('.');
         const ascending = direction !== 'desc';
         query = query.order(field, { ascending });
     }
 
     // Handle limit
-    if (params._limit) {
-        query = query.limit(Number(params._limit));
+    if (limitParam) {
+        query = query.limit(Number(limitParam));
     }
 
     const { data, error } = await query;
