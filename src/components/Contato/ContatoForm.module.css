@@ -1,0 +1,73 @@
+.form {
+    width: 100%;
+    max-width: 500px;
+}
+
+.formControl {
+    margin-bottom: 1rem;
+}
+
+.formControl label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.formControl input,
+.formControl textarea {
+    display: block;
+    width: 100%;
+    font: inherit;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.formControl.invalid input,
+.formControl.invalid textarea {
+    border-color: #f33;
+    background-color: #fdd;
+}
+
+.errorText {
+    color: #f33;
+    font-size: 0.8rem;
+}
+
+.actions {
+    text-align: right;
+}
+
+.actions button {
+    font: inherit;
+    cursor: pointer;
+    background-color: var(--cor-primaria);
+    color: white;
+    border: 1px solid var(--cor-primaria);
+    border-radius: 4px;
+    padding: 0.75rem 2.5rem;
+}
+
+.actions button:hover {
+    background-color: var(--cor-primaria-dark);
+    border-color: var(--cor-primaria-dark);
+}
+
+.actions button:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    color: #292929;
+    cursor: not-allowed;
+}
+
+.success {
+    color: #008000;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.error {
+    color: #f33;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
