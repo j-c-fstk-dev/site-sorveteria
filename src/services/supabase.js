@@ -26,26 +26,14 @@ class SupabaseService {
       throw new Error("Supabase client not initialized");
     }
 
-    let query = this.client.from(table).select('*');
+    let query = this.client.from(table).select();
 
-    // Handle control parameters first
-    if (params._sort) {
-      const [field, direction] = params._sort.split('.');
-      const ascending = direction !== 'desc';
-      query = query.order(field, { ascending });
-    }
-    if (params._limit) {
-      query = query.limit(Number(params._limit));
-    }
+    // Separa os parâmetros de controle (_sort, _limit) dos filtros
+    const { _sort, _limit, ...filters } = params;
 
-    // Handle filters, explicitly skipping control parameters
-    const controlParams = ['_sort', '_limit'];
-    for (const key in params) {
-      if (controlParams.includes(key)) {
-        continue; // Skip control parameters in this loop
-      }
-
-      const value = params[key];
+    // Aplica os filtros (eq, lte, gte, etc.)
+    for (const key in filters) {
+      const value = filters[key];
 
       if (typeof value === 'string' && value.includes('.')) {
         let [operator, ...rest] = value.split('.');
@@ -59,6 +47,17 @@ class SupabaseService {
       } else {
         query = query.eq(key, value);
       }
+    }
+
+    // Aplica a ordenação
+    if (_sort) {
+      const [field, direction] = _sort.split('.');
+      query = query.order(field, { ascending: direction !== 'desc' });
+    }
+
+    // Aplica o limite
+    if (_limit) {
+      query = query.limit(Number(_limit));
     }
 
     const { data, error } = await query;

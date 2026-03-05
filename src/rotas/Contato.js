@@ -7,8 +7,9 @@ import { useApi } from '../hooks/useApi';
 import ContatoForm from '../components/Contato/ContatoForm';
 
 const Contato = () => {
-  const { data: empresa } = useApi('empresa', { '_limit': 1 });
-  const { email, telefone, instagram, whatsapp } = empresa || {};
+  const { data: empresas } = useApi('empresa', { '_limit': 1 });
+  const empresa = empresas[0] || {};
+  const { email, telefone, instagram, whatsapp } = empresa;
 
   useEffect(() => {
     document.title = 'Contato - Gelato & Grano';
