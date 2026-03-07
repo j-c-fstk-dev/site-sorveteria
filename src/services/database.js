@@ -24,7 +24,7 @@ class DatabaseService {
 
   async createTables() {
     this.data = {
-      empresas: [],
+      empresa: [],
       unidades: [],
       categorias: [],
       produtos: [],
@@ -38,9 +38,9 @@ class DatabaseService {
 
   async insertInitialData() {
     // Verificar se já existe dados
-    if (this.data.empresas.length === 0) {
+    if (this.data.empresa.length === 0) {
       // Inserir empresa
-      this.data.empresas.push({
+      this.data.empresa.push({
         id: 1,
         nome_fantasia: 'Aloha Sorveteria',
         razao_social: 'Fernanda Santos Sorveteria Ltda',
