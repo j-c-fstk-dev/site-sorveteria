@@ -8,8 +8,8 @@ import Head from '../components/Utility/Head';
 
 const Produtos = () => {
   // Correção: Usa a sintaxe 'eq.true' para filtros booleanos no Supabase
-  const { data: produtos, loading: loadingProdutos, error: errorProdutos } = useApi('produtos', { ativo: 'eq.true', _sort: 'ordem' });
-  const { data: categorias, loading: loadingCategorias, error: errorCategorias } = useApi('categorias', { ativa: 'eq.true', _sort: 'ordem' });
+  const { data: produtos, loading: loadingProdutos, error: errorProdutos } = useApi('produtos', { ativo: 'eq.true' });
+  const { data: categorias, loading: loadingCategorias, error: errorCategorias } = useApi('categorias', { ativa: 'eq.true' });
 
   useEffect(() => {
     window.scrollTo(0, 0);

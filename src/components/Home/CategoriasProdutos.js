@@ -7,7 +7,7 @@ import Loading from '../Utility/Loading';
 
 const CategoriasProdutos = () => {
   // Busca apenas as categorias que estão marcadas como ativas
-  const { data: categorias, loading, error } = useApi('categorias', { ativo: 'eq.true', _sort: 'ordem' });
+  const { data: categorias, loading, error } = useApi('categorias', { ativa: 'eq.true' });
 
   const renderCategorias = () => {
     if (loading) {
