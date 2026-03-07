@@ -2,16 +2,26 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import classes from './Footer.module.css'
 import { ReactComponent as InstagramIcon } from '../assets/instagram.svg'
-import { ReactComponent as FacebookIcon } from '../assets/facebook.svg'
 import { ReactComponent as WhatsappIcon } from '../assets/whatsapp.svg'
+import { useApi } from '../hooks/useApi'
 
 const Footer = () => {
+  const { data: empresa } = useApi('empresa', { _limit: 1 })
+  const empresaInfo = empresa?.[0] || {}
+
+  const instagramHandle = empresaInfo.instagram?.replace('@', '') || 'alohasorveteria.pinda'
+  const whatsappNumber = empresaInfo.whatsapp?.replace(/\D/g, '') || '12999998888'
+  const email = empresaInfo.email || 'contato@alohasorveteria.com.br'
+  const telefone = empresaInfo.telefone || '(12) 3123-4567'
+
   return (
     <footer className={classes.footer}>
-      <div className={`container ${classes.container}`}>
-        <nav className={classes.navMenuFooter}>
-          <p className={classes.titulosMenu}>Menu</p>
-          <ul>
+      <div className={`container ${classes.footerContainer}`}>
+        
+        {/* SEÇÃO MENU */}
+        <nav className={classes.footerSection}>
+          <h3 className={classes.sectionTitle}>Menu</h3>
+          <ul className={classes.menuList}>
             <li><Link to='/'>Home</Link></li>
             <li><Link to='/produtos'>Produtos</Link></li>
             <li><Link to='/lojas'>Lojas</Link></li>
@@ -19,24 +29,49 @@ const Footer = () => {
             <li><Link to='/contato'>Contato</Link></li>
           </ul>
         </nav>
-        <div className={classes.iconsMade}>
-        <a href="https://www.flaticon.com/packs/ice-cream-menu-2" title="Ice Cream Menu icons">Icons created by tulpahn - Flaticon</a>
-        </div>
-        <address className={classes.contato}>
-          <p className={classes.titulosMenu}>Contato</p>
-          <ul>
-            <li>Email: contato@contato.com</li>
-            <li>Telefone: +00 12 12345-1234</li>
-            <li className={classes.redesSociais}>
-              <a href='/' aria-label='acessar instagram'><InstagramIcon /></a>
-              <a href='/' aria-label='acessar facebook'><FacebookIcon /></a>
-              <a href='/' aria-label='acessar whatsapp'><WhatsappIcon /></a>
+
+        {/* SEÇÃO CONTATO */}
+        <address className={`${classes.footerSection} ${classes.contato}`}>
+          <h3 className={classes.sectionTitle}>Contato</h3>
+          <ul className={classes.contactList}>
+            <li>
+              <a href={`mailto:${email}`}>{email}</a>
+            </li>
+            <li>
+              <a href={`tel:${whatsappNumber}`}>{telefone}</a>
+            </li>
+            <li className={classes.socialLinks}>
+              <a 
+                href={`https://instagram.com/${instagramHandle}`} 
+                aria-label='Acessar Instagram'
+                target='_blank' 
+                rel='noopener noreferrer'
+                title='Instagram'
+              >
+                <InstagramIcon />
+              </a>
+              <a 
+                href={`https://wa.me/${whatsappNumber}`} 
+                aria-label='Acessar WhatsApp'
+                target='_blank' 
+                rel='noopener noreferrer'
+                title='WhatsApp'
+              >
+                <WhatsappIcon />
+              </a>
             </li>
           </ul>
         </address>
+
+        
       </div>
-      <div className={classes.madeBy}>
-        Projeto feito por <a href='https://github.com/aridsm'>Ariane Morelato</a>
+
+      {/* FOOTER BOTTOM */}
+      <div className={classes.footerBottom}>
+        <p>
+          Feito com amor por 
+          <a href='https://github.com/j-c-fstk-dev' target='_blank' rel='noopener noreferrer'> Jorge C.</a>
+        </p>
       </div>
     </footer>
   )
