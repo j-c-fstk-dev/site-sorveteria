@@ -9,7 +9,7 @@ const ProdutoForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: produtoParaEdicao, loading: loadingProduto } = useApi(id ? `produtos/${id}` : null);
-  const { data: categorias } = useApi('categorias', { ativa: 1, _sort: 'nome' });
+  const { data: categorias } = useApi('categorias', { ativa: 'eq.true', _sort: 'nome' });
   const { create, update } = useCrud('produtos');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

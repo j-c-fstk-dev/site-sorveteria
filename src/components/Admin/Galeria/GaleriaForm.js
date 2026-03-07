@@ -15,7 +15,7 @@ const GaleriaForm = () => {
     descricao: '',
     imagem_url: '',
     ordem: 0,
-    ativa: 1
+    ativa: true
   });
 
   const isEditing = Boolean(id);
@@ -148,7 +148,7 @@ const GaleriaForm = () => {
             <input
               type="checkbox"
               name="ativa"
-              checked={formData.ativa === 1}
+              checked={formData.ativa === true}
               onChange={handleChange}
             />
             Foto Ativa

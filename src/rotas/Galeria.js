@@ -5,7 +5,7 @@ import { useApi } from '../hooks/useApi';
 import classes from './Galeria.module.css';
 
 const Galeria = () => {
-  const { data: galeria, loading, error } = useApi('galeria', { ativa: 1 });
+  const { data: galeria, loading, error } = useApi('galeria', { ativa: 'eq.true' });
 
   useEffect(() => {
     window.scrollTo(0, 0)

@@ -188,7 +188,7 @@ const PromocaoForm = () => {
             <input
               type="checkbox"
               name="ativa"
-              checked={formData.ativa === 1}
+              checked={formData.ativa === true}
               onChange={handleChange}
             />
             Promoção Ativa
