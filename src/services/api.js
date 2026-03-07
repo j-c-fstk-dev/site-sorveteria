@@ -1,6 +1,5 @@
 
-import supabaseService from './supabase'; // Importa diretamente o serviço supabase
-
+import databaseService from './database'; // Importa diretamente o serviço database
 // Classe que delega todas as chamadas para o supabaseService
 class ApiService {
   constructor(client) {
@@ -73,4 +72,4 @@ class ApiService {
 }
 
 // Exporta uma instância única do ApiService, já configurada com o supabaseService
-export default new ApiService(supabaseService);
+export default new ApiService(databaseService);

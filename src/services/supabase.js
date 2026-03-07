@@ -46,25 +46,34 @@ class SupabaseService {
     queryParams.append('select', '*'); // Seleciona todas as colunas
 
     for (const key in params) {
-      if (key === '_sort') {
+      if (key === '_limit') {
+        // Pula _limit, será tratado após o loop
+        continue;
+      } else if (key === '_sort') {
+        // Converte _sort para order do Supabase
         queryParams.append('order', `${params[key]}.asc`);
       } else {
+        // Adiciona outros parâmetros normalmente
         queryParams.append(key, params[key]);
       }
     }
 
-    const queryString = queryParams.toString()
-      .replace(/_limit=/g, 'limit='); // Corrige o nome do parâmetro de limite
+    // Adiciona limit se foi passado
+    if (params._limit) {
+      queryParams.append('limit', params._limit);
+    }
+
+    const queryString = queryParams.toString();
 
     const url = `${this.supabaseUrl}/rest/v1/${table}?${queryString}`;
 
-    console.log(`[DEBUG] Executando GET com fetch manual: ${url}`);
+    console.log(`[DEBUG] URL GET para '${table}': ${url}`);
 
     try {
       const data = await manualFetch(url, this.supabaseKey);
       return data;
     } catch (error) {
-      console.error(`Fetch manual para a tabela '${table}' falhou:`, error);
+      console.error(`Erro ao buscar '${table}':`, error);
       throw error;
     }
   }
